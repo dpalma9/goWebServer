@@ -14,11 +14,21 @@ func main() {
 	e := echo.New()
 	p := promMW.NewPrometheus("echo", nil)
 
-	myCounter := prometheus.NewGauge(prometheus.GaugeOpts{
+	myCounter := prometheus.NewGaugeVec(prometheus.GaugeOpts{
+                Namespace:   "un_namespace",
+                Subsystem:   "blob_storage",
 		Name:        "my_handler_executions",
 		Help:        "Counts executions of my handler function.",
-		ConstLabels: prometheus.Labels{"role": "servertest"},
-	})
+        },
+        []string{
+                 "role",
+        },
+	)
+	//myCounter := prometheus.NewGauge(prometheus.GaugeOpts{
+	//	Name:        "my_handler_executions",
+	//	Help:        "Counts executions of my handler function.",
+        //},
+	//)
 	if err := prometheus.Register(myCounter); err != nil {
 		log.Fatal(err)
 	}

@@ -6,7 +6,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-func Test(myCounter prometheus.Gauge) string {
+func Test(myCounter *prometheus.GaugeVec) string {
   // Prometheus
   //myCounter := prometheus.NewGauge(prometheus.GaugeOpts{
   //	Name:        "my_handler_executions",
@@ -20,6 +20,8 @@ func Test(myCounter prometheus.Gauge) string {
   //fmt.Println("Mensaje de prueba")
   var texto string
   texto = "MENSAJE DE PRUEBA"
-  myCounter.Set(9.9)
+  //myCounter.Labels("testserver").Set(9.9)
+  myCounter.WithLabelValues("testserver").Set(9.9)
+  //myCounter.With(prometheus.Labels{"role": "testserver"}).Set(9.9)
   return texto
 }
