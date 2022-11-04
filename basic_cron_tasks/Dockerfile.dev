@@ -1,0 +1,19 @@
+FROM golang:1.17.3-stretch
+
+RUN go install github.com/cweill/gotests/gotests@latest && \
+    go install github.com/fatih/gomodifytags@latest && \
+    go install golang.org/x/tools/gopls@latest && \
+    go install github.com/josharian/impl@latest && \
+    go install github.com/haya14busa/goplay/cmd/goplay@latest && \
+    go install github.com/go-delve/delve/cmd/dlv@latest && \
+    go install honnef.co/go/tools/cmd/staticcheck@latest && \
+    go install golang.org/x/tools/gopls@latest
+
+COPY src /web
+
+WORKDIR /web
+
+RUN go mod init main && go mod tidy && go mod download -x
+
+ENTRYPOINT ["/bin/bash","-c","sleep infinity" ]
+CMD ["sh","-c","/bin/bash"]
