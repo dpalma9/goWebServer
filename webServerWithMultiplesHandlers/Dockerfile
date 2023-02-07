@@ -2,7 +2,7 @@ FROM golang:alpine
 
 RUN apk add curl
 
-COPY src /web
+COPY . /web
 
 WORKDIR /web
 
