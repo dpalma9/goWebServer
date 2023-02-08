@@ -17,13 +17,16 @@ type CreateVolume struct {
 }
 
 type Response struct {
-	Response string
-	Code     int
+	Response string `json:"response"`
+	Code     int    `json:"code"`
 }
 
 // end vars
 
 func CreateVol(body []CreateVolume) ([]byte, error) {
 	fmt.Printf("Entro en la funcion de crear\n")
-	return Response{Response: "OK", Code: 200}, nil
+	res_json := &Response{"OK", 200}
+	res, _ := json.Marshal((res_json))
+	fmt.Printf("Salgo de la funcion de crear\n")
+	return res, nil
 }
