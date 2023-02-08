@@ -1,6 +1,7 @@
 package model
 
 import (
+	"encoding/json"
 	"fmt"
 	//"io/ioutil"
 	//"log"
@@ -15,8 +16,14 @@ type CreateVolume struct {
 	pv          string
 }
 
+type Response struct {
+	Response string
+	Code     int
+}
+
 // end vars
 
-func CreateVol(body []CreateVolume) {
+func CreateVol(body []CreateVolume) ([]byte, error) {
 	fmt.Printf("Entro en la funcion de crear\n")
+	return Response{Response: "OK", Code: 200}, nil
 }

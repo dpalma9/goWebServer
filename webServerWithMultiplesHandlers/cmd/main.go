@@ -6,11 +6,11 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/dpalma9/goWebServer/blob/2dd908cab4e041204e457a15d25335fa07ccf59e/webServerWithMultiplesHandlers/model"
+	"myweb/model"
 )
 
 // vars
-var results []string
+var result []string
 
 // Web development
 func helloHandler(w http.ResponseWriter, r *http.Request) {
@@ -39,12 +39,11 @@ func createHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			http.Error(w, "Error reading request body",
 				http.StatusInternalServerError)
+		} else {
+			result = model.CreateVol(body)
+			fmt.Printf("Print de result\n")
+			fmt.Printf(result)
 		}
-        else {
-            result = model.CreateVol(body)
-            fmt.Printf("Print de result\n")
-            fmt.Printf(result)
-        }
 		//results = append(results, string(body))
 
 		fmt.Fprint(w, "POST done")
