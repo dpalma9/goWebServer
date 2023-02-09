@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	//myweb/model"
 )
 
@@ -62,6 +63,10 @@ func createHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		fmt.Printf("Estoy dentro del else.\n")
 		fmt.Printf("%s\n", vol)
+		response, _ := CreateVol(vol)
+		fmt.Printf("Respuesta de creacion.\n")
+		fmt.Printf("%s\n", response)
+		fmt.Fprint(w, string(response))
 	}
 
 	fmt.Fprint(w, "POST done")
@@ -70,6 +75,12 @@ func createHandler(w http.ResponseWriter, r *http.Request) {
 // function del package model
 func CreateVol(body CreateVolume) ([]byte, error) {
 	fmt.Printf("Entro en la funcion de crear\n")
+	root_path := "/tmp"
+	pv_path := root_path + "/" + body.Application + "/" + body.Environment + "/" + body.Component + "-" + body.Pv
+	fmt.Printf("Vamos a crear el siguiente path --> %s\n", pv_path)
+	if err := os.MkdirAll(pv_path, os.ModePerm); err != nil {
+		log.Fatal(err)
+	}
 	res_json := &Response{"OK", 200}
 	res, _ := json.Marshal((res_json))
 	fmt.Printf("Salgo de la funcion de crear\n")
