@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	//myweb/model"
 )
 
@@ -63,6 +64,12 @@ func createHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		fmt.Printf("Estoy dentro del else.\n")
 		fmt.Printf("%s\n", vol)
+		validateParam, paramErr := CreateIsValid(vol)
+		if paramErr != nil {
+			http.Error(w, string(validateParam), http.StatusBadRequest)
+			//fmt.Fprint(w, string(validateParam))
+			return
+		}
 		response, _ := CreateVol(vol)
 		fmt.Printf("Respuesta de creacion.\n")
 		fmt.Printf("%s\n", response)
@@ -84,6 +91,58 @@ func CreateVol(body CreateVolume) ([]byte, error) {
 	res_json := &Response{"OK", 200}
 	res, _ := json.Marshal((res_json))
 	fmt.Printf("Salgo de la funcion de crear\n")
+	return res, nil
+}
+
+func CreateIsValid(body CreateVolume) ([]byte, error) {
+	fmt.Printf("Entro en la funcion de validar\n")
+	// response vars
+	res_ok := &Response{"Parameters are OK", 200}
+	res, _ := json.Marshal((res_ok))
+	res_missing := &Response{"Some parameter is missing", 409}
+	res_miss, _ := json.Marshal((res_missing))
+
+	// valid values vars
+	validZone := map[string]bool{
+		"intranet": true,
+		"internet": true,
+		"platform": true,
+	}
+
+	validEnv := map[string]bool{
+		"pre":  true,
+		"pro":  true,
+		"tst":  true,
+		"dev":  true,
+		"sbox": true,
+	}
+
+	// Check if all parameters are on the request
+	if body.Application == "" {
+		return res_miss, fmt.Errorf("'application' is missing")
+	}
+	if body.Zone == "" {
+		return res_miss, fmt.Errorf("'zone' is missing")
+	}
+	if body.Environment == "" {
+		return res_miss, fmt.Errorf("'environment' is missing")
+	}
+	if body.Component == "" {
+		return res_miss, fmt.Errorf("'component' is missing")
+	}
+	if body.Pv == "" {
+		return res_miss, fmt.Errorf("'pv' is missing")
+	}
+
+	// Check if values are valid
+	if !validZone[strings.ToLower(body.Zone)] {
+		return res_miss, fmt.Errorf("'zone' hasn't a valid value")
+	}
+	if !validEnv[strings.ToLower(body.Environment)] {
+		return res_miss, fmt.Errorf("'environment' hasn't a valid value")
+	}
+
+	fmt.Printf("Salgo de la funcion de validar\n")
 	return res, nil
 }
 
